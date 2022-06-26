@@ -49,7 +49,7 @@ def create_app(test_config=None):
     """
     @app.route('/categories', methods=['GET'])
     def get_categories():
-        categories = Category.query.order_by('id').all()
+        categories = Category.query.order_by(Category.type).all()
 
         if len(categories) == 0:
             abort(404)
@@ -169,8 +169,8 @@ def create_app(test_config=None):
             abort(404)
 
         if search_term:
-            search_results = Question.query.filter(Question.question.ilike(
-                '%' + search_term + '%')).all()
+            search_results = Question.query.filter(
+                Question.question.ilike('%' + search_term + '%')).all()
 
         return jsonify({
             'success': True,

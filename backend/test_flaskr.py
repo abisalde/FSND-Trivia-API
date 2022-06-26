@@ -35,7 +35,7 @@ class TriviaTestCase(unittest.TestCase):
     Write at least one test for each test for successful operation and for expected errors.
     """
 
-    def test_get_paginated_questions(self):
+    def test_paginated_questions(self):
         res = self.client().get('/questions')
         data = json.loads(res.data)
 
@@ -45,7 +45,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(len(data['questions']))
         self.assertTrue(len(data['categories']))
 
-    def test_404_sent_requesting_questions_beyond_valid_page(self):
+    def test_404_for_page_beyond_range(self):
         res = self.client().get('/questions?page=1000')
         data = json.loads(res.data)
 
@@ -61,7 +61,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(len(data['categories']))
 
-    def test_404_sent_requesting_non_existing_category(self):
+    def test_404_for_categories_not_in_db(self):
         res = self.client().get('/categories/9999')
         data = json.loads(res.data)
 
@@ -116,15 +116,6 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-
-    def test_404_play_quiz(self):
-        new_quiz_round = {'previous_questions': []}
-        res = self.client().post('/quizzes', json=new_quiz_round)
-        data = json.loads(res.data)
-
-        self.assertEqual(res.status_code, 422)
-        self.assertEqual(data["success"], False)
-        self.assertEqual(data["message"], "unprocessable")
 
 
 # Make the tests conveniently executable
