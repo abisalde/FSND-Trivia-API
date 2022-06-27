@@ -235,15 +235,18 @@ def create_app(test_config=None):
                 questions_available = Question.query.filter(
                     Question.id.notin_(previous_questions)).all()
             else:
-                questions_available = Question.query.filter_by(
-                    category=quiz_category['id']).filter(Question.id.notin_(previous_questions)).all()
+                questions_available = Question.query.filter(
+                    Question.category == quiz_category['id']).filter(
+                    Question.id.notin_(previous_questions)).all()
 
-                new_question = questions_available[random.randrange(
-                    0, len(questions_available))].format() if len(questions_available) > 0 else None
+            if len(questions_available) == 0:
+                abort(404)
+
+            question = random.choice(questions_available).format()
 
             return jsonify({
                 'success': True,
-                'question': new_question
+                'question': question,
             })
         except:
             abort(422)
